@@ -1,0 +1,72 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum ProjectStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ProjectType {
+  nodejs
+  react
+}
+
+enum AuthProvider {
+  local
+  github
+  google
+}
+
+enum AccountStatus {
+  active
+  suspended
+  deactivated
+}
+
+enum UserRole {
+  user
+  admin
+  moderator
+}
+
+model User {
+  id                String        @id @default(uuid())
+  email             String        @unique
+  password          String
+  salt              String?
+  githubAccessToken String?       @map("github_access_token")
+  githubAppToken    String?       @map("github_app_token")
+  installationId    Int?          @unique @map("installation_id")
+  fullName          String?       @map("full_name")
+  verified          Boolean       @default(false)
+  githubUsername    String?       @unique @map("github_username")
+  status            AccountStatus @default(active)
+  role              UserRole      @default(user)
+  provider          AuthProvider  @default(local)
+  createdAt         DateTime?     @default(now()) @map("created_at")
+  updatedAt         DateTime?     @updatedAt @map("updated_at")
+  imageURL          String?
+  projects          Project[]
+
+  @@map("users")
+}
+
+model Project {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation(fields: [userId], references: [id])
+  project_name  String
+  type          ProjectType   @default(react)
+  status        ProjectStatus @default(INACTIVE)
+  s3BucketPath  String
+  containerId   String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  collaborators Int           @default(1)
+}

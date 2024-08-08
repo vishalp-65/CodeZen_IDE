@@ -5,6 +5,7 @@ import { ApiError } from "./utils/ApiError";
 import httpStatus from "http-status";
 import errorHandler from "./middlewares/errorHandler";
 import apiRoutes from "./routes/index";
+import { config } from "./config/server_config";
 
 dotenv.config(); // Load environment variables
 
@@ -26,3 +27,7 @@ app.use((req, res, next) => {
 
 // Error handler middleware
 app.use(errorHandler);
+
+app.listen(config.PORT, () => {
+    console.log(`Server running at ${config.PORT}`);
+});

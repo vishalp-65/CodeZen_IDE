@@ -1,11 +1,11 @@
 import { Router } from "express";
 import httpStatus from "http-status";
-// import nodeRoutes from "./nodeRoutes";
+import authRoutes from "./authRoutes";
 
 const router = Router();
 
-// Node routes
-// router.use("/node", nodeRoutes);
+// Auth routes
+router.use("/auth", authRoutes);
 
 // Checking api is live
 router.get("/info", (req, res) => {
