@@ -10,3 +10,15 @@ export const createUser = catchAsync(async (req: Request, res: Response) => {
 
     res.status(httpStatus.CREATED).json({ message });
 });
+
+export const verifyToken = catchAsync(async (req: Request, res: Response) => {
+    const { token } = req.query as { token: string };
+
+    if (!token)
+        return res
+            .status(httpStatus.BAD_REQUEST)
+            .json({ error: "Provide token" });
+
+    const response = await AuthService.verifyEmail(token);
+    res.status(httpStatus.OK).json(response);
+});
