@@ -15,6 +15,11 @@ const loginSchema = z.object({
     password: z.string().min(6).trim(),
 });
 
+const changePasswordSchema = z.object({
+    oldPassword: z.string().min(6).trim(),
+    newPassword: z.string().min(6).trim(),
+});
+
 export const validateAuthInput = (data: any) => {
     const result = authSchema.safeParse(data);
     if (!result.success) {
@@ -26,6 +31,15 @@ export const validateAuthInput = (data: any) => {
 
 export const validateLoginInput = (data: any) => {
     const result = loginSchema.safeParse(data);
+    if (!result.success) {
+        console.log("Validation Error:", result.error);
+        throw new ApiError("Invalid input data", httpStatus.BAD_REQUEST);
+    }
+    return result.data;
+};
+
+export const validatePasswordInput = (data: any) => {
+    const result = changePasswordSchema.safeParse(data);
     if (!result.success) {
         console.log("Validation Error:", result.error);
         throw new ApiError("Invalid input data", httpStatus.BAD_REQUEST);
